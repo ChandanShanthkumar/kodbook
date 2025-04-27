@@ -35,13 +35,13 @@
                     <span class="timestamp" th:text="${#temporals.format(post.timestamp, 'dd/MM/yyyy HH:mm')}"></span>
 
                     <div th:if="${post.user.username == session.username}" class="post-actions">
-                          <a th:href="@{'/posts/' + ${post.id} + '/edit'}" class="edit-button">Edit</a>
+                          <a th:href="@{'/posts/' + ${post.id} + '/edit'}" class="edit-button"><i class="fas fa-edit"></i> Edit</a>
 
-                        <a th:href="@{'/posts/delete/' + ${post.id}}" class="delete-button">Delete</a>
+                        <a th:href="@{'/posts/delete/' + ${post.id}}" class="delete-button"><i class="fas fa-trash"></i> Delete</a>
                     </div>
                 </div>
                 
-
+                
                 <p class="caption">
                     <span th:text="${post.content}"></span>
                 </p>
@@ -51,19 +51,21 @@
                     <ul>
                           <li th:each="comment : ${post.comments}">
                             <div class="comment-content">
-                                <span class="comment-username" th:text="${comment.user.username}"></span>: <span th:text="${comment.message}"></span>
-                                <a th:if="${comment.user.username == session.username}" th:href="@{'/posts/' + ${post.id} + '/comments/' + ${comment.id} + '/delete'}" class="comment-delete-button">Delete</a>
+                                <span class="comment-username" th:text="${comment.user.username}"></span>: <span th:text="${comment.message}"></span><a th:if="${comment.user.username == session.username}" th:href="@{'/posts/' + ${post.id} + '/comments/' + ${comment.id} + '/delete'}" class="comment-delete-button"><i class="fas fa-trash"></i></a>
                             </div>
                         </li>
                     </ul>
 
                 </div>
 
+                <div class="comments-container">
                 <!-- Comment form -->
                 <form th:action="@{'/posts/' + ${post.id} + '/comments'}" method="post" class="comment-form">
                     <textarea name="message" placeholder="Add a comment..." required></textarea>
-                    <button type="submit">Comment</button>
+                    <button type="submit" class="comment-btn"> <i class="fas fa-comment"></i> Comment</button>
+                    <button class="like-btn"><i class="fas fa-heart"></i></button>
                 </form>
+                </div>
             </div>
         </span>
     </div>
