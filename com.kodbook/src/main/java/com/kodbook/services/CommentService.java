@@ -4,10 +4,10 @@ import com.kodbook.entities.Post;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CommentService {
+public interface CommentService {
 
-    public Object createComment(Long postId, Post comment) {
-        return null;
+    public Post createComment(Long postId, Post comment) {
+        
     }
 
     public void deleteComment(Long postId, Long commentId) {
