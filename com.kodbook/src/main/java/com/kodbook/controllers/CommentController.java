@@ -1,6 +1,6 @@
 package com.kodbook.controllers;
 
-import com.kodbook.entities.Comment;
+import com.kodbook.entities.Post;
 import com.kodbook.services.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,10 +16,10 @@ public class CommentController {
     private CommentService commentService;
 
     @PostMapping
-    public ResponseEntity<Comment> createComment(@PathVariable Long postId, @RequestBody Comment comment) {
+    public ResponseEntity<Post> createComment(@PathVariable Long postId, @RequestBody Post post) {
         try {
-            Comment createdComment = commentService.createComment(postId, comment);
-            return new ResponseEntity<>(createdComment, HttpStatus.CREATED);
+            Post createdComment = commentService.createComment(postId, post);
+             return new ResponseEntity<>(createdComment, HttpStatus.CREATED);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
