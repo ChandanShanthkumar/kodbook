@@ -5,12 +5,18 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.kodbook.entities.Post;
 import com.kodbook.entities.User;
 import com.kodbook.services.PostService;
@@ -18,7 +24,8 @@ import com.kodbook.services.UserService;
 
 import jakarta.servlet.http.HttpSession;
 
-@Controller
+
+@RestController
 public class UserController {
 	@Autowired
 	UserService service;
@@ -52,38 +59,56 @@ public class UserController {
 			return "home";
 		}
 		else {
-			return "index";
+			return "login failed";
 		}
 	}
-	
-	@PostMapping("/updateProfile")
-	public String updateProfile(@RequestParam String dob, @RequestParam String gender,
-			@RequestParam String city, @RequestParam String bio,
-			@RequestParam String college, @RequestParam String linkedIn,
-			@RequestParam String gitHub, @RequestParam MultipartFile profilePic
-			, HttpSession session,
-			Model model) {
-		
+
+
+	@GetMapping("/users/me")
+	public ResponseEntity<User> getCurrentUserProfile(HttpSession session) {
 		String username = (String) session.getAttribute("username");
-		
-		//fetch user object using username
-		User user = service.getUser(username);
-		//update and save object
-		user.setDob(dob);
-		user.setGender(gender);
-		user.setCity(city);
-		user.setBio(bio);
-		user.setCollege(college);
-		user.setLinkedIn(linkedIn);
-		user.setGitHub(gitHub);
-		try {						
-			user.setProfilePic(profilePic.getBytes());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (username == null) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); // 401
 		}
-		service.updateUser(user);
-		model.addAttribute("user", user);
-		return "myProfile";
+		User user = service.getUser(username);
+		if (user == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404
+		}
+		return new ResponseEntity<>(user, HttpStatus.OK); // 200
+	}
+
+	@GetMapping("/users/{id}")
+	public ResponseEntity<User> getUserProfileById(@PathVariable Long id) {
+		User user = service.getUserById(id);
+		if (user == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(user, HttpStatus.OK);
+	}
+	@PutMapping("/users/me")
+	public ResponseEntity<User> updateUserProfile(
+		@RequestBody User userDetails,
+		HttpSession session) {
+		String username = (String) session.getAttribute("username");
+		if (username == null) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		User currentUser = service.getUser(username);
+		if (currentUser == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		currentUser.setDob(userDetails.getDob());
+		currentUser.setGender(userDetails.getGender());
+		currentUser.setCity(userDetails.getCity());
+		currentUser.setBio(userDetails.getBio());
+		currentUser.setCollege(userDetails.getCollege());
+		currentUser.setLinkedIn(userDetails.getLinkedIn());
+		currentUser.setGitHub(userDetails.getGitHub());
+		if (userDetails.getProfilePic() != null) {
+            currentUser.setProfilePic(userDetails.getProfilePic());
+        }
+
+		User updatedUser = service.updateUser(currentUser);
+		return new ResponseEntity<>(updatedUser, HttpStatus.OK);
 	}
 }

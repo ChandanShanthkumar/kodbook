@@ -2,16 +2,21 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KodBook Home</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/profile.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/styles.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
+</head> 
 <body>
     <nav>
-        <span th:text="${session.username}"></span>
-        <a href="/goHome"><i class="fas fa-home"></i> News feed</a>
-        <a href="/openCreatePost"><i class="fas fa-plus-circle"></i> Create post</a>
-        <a href="/openMyProfile"><i class="fas fa-user-circle"></i> My profile</a>
+            <a th:href="@{'/users/me'}"><span th:text="${session.username}"></span></a>
+            <a href="/home"><i class="fas fa-home"></i> News feed</a>
+            <a th:href="@{'/users/me'}"><i class="fas fa-user-circle"></i> My profile</a>
+        <a th:href="@{'/posts/new'}" class="create-post-button">
+         <i class="fas fa-plus-circle"></i> Create post
+        </a>
+        
+       
         <a href="/logout"><i class="fas fa-sign-out-alt"></i> LOG OUT</a>
     </nav>
 
@@ -21,60 +26,44 @@
                 <!-- Profile picture and Username -->
                 <div class="post-header">
                     <div class="profile-pic">
-                        <img th:if="${post.user.photoBase64}" 
-                             th:src="'data:image/jpeg;base64,' + ${post.user.photoBase64}" 
-                             alt="User Photo" />
+                        <img th:if="${post.user.photoBase64}"
+                             th:src="'data:image/jpeg;base64,' + ${post.user.photoBase64}"
+                             alt="User Photo"/>
                     </div>
-                    
-                    <form action="/visitProfile" method="post">
-                    <span class="username" th:text="${post.user.username}">Unknown</span>
-	                    <input type="hidden" name="profileName" th:value="${post.user.username}">
-	                    
-	                    <input type="submit" value="Visit profile">
-	                </form>
-              
-                </div>
 
-                <!-- Post Image -->
-                <div class="post-image">
-                    <img th:if="${post.photoBase64}" 
-                         th:src="'data:image/jpeg;base64,' + ${post.photoBase64}" 
-                         alt="Post Photo" />
-                </div>
+                    <a th:href="@{'/users/' + ${post.user.id}}" class="username" th:text="${post.user.username}">Unknown</a>
+                    <span class="timestamp" th:text="${#temporals.format(post.timestamp, 'dd/MM/yyyy HH:mm')}"></span>
 
-                <!-- Caption -->
+                    <div th:if="${post.user.username == session.username}" class="post-actions">
+                          <a th:href="@{'/posts/' + ${post.id} + '/edit'}" class="edit-button">Edit</a>
+
+                        <a th:href="@{'/posts/delete/' + ${post.id}}" class="delete-button">Delete</a>
+                    </div>
+                </div>
+                
+
                 <p class="caption">
-                    <span th:text="${post.caption}"></span>
+                    <span th:text="${post.content}"></span>
                 </p>
 
-                <!-- Likes -->
-                <p class="likes">
-                    <strong>Likes:</strong> 
-                    <span th:text="${post.likes}"></span>
-                </p>
-
-                <!-- Like form -->
-                <form action="/likePost" method="post" class="like-form">
-                    <input type="hidden" name="id" th:value="${post.id}">
-                    <input type="submit" value="LIKE POST">
-                </form>
-
-                <!-- Comment form -->
-                <form action="/addComment" method="post" class="comment-form">
-                    <input type="hidden" name="id" th:value="${post.id}">
-                    <textarea name="comment" placeholder="Add a comment..." required></textarea>
-                    <input type="submit" value="Comment">
-                </form>
-
-                <!-- Displaying Comments -->
-                <div class="comments-section">
+             <div class="comments-section">
                     <h4>Comments:</h4>
                     <ul>
-                        <li th:each="comment : ${post.comments}">
-                            <span th:text="${comment}"></span>
+                          <li th:each="comment : ${post.comments}">
+                            <div class="comment-content">
+                                <span class="comment-username" th:text="${comment.user.username}"></span>: <span th:text="${comment.message}"></span>
+                                <a th:if="${comment.user.username == session.username}" th:href="@{'/posts/' + ${post.id} + '/comments/' + ${comment.id} + '/delete'}" class="comment-delete-button">Delete</a>
+                            </div>
                         </li>
                     </ul>
+
                 </div>
+
+                <!-- Comment form -->
+                <form th:action="@{'/posts/' + ${post.id} + '/comments'}" method="post" class="comment-form">
+                    <textarea name="message" placeholder="Add a comment..." required></textarea>
+                    <button type="submit">Comment</button>
+                </form>
             </div>
         </span>
     </div>

@@ -13,10 +13,13 @@
 	        <a href="/openCreatePost"><i class="fas fa-plus-circle"></i> Create post</a>
 	        <a href="/openMyProfile"><i class="fas fa-user-circle"></i> My profile</a>
 	        <a href="/logout"><i class="fas fa-sign-out-alt"></i> LOG OUT</a>
-	    </nav>
+	    </nav>	    
 		<h1>KodBook</h1>
 		<h3>Update your profile!</h3>
 		<hr>
+		<form action="/updateProfile" method="post">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
 		<form action="/updateProfile" method="post" enctype="multipart/form-data">		
 			<label>DOB : </label>
 			<input type = "date" name = "dob">
