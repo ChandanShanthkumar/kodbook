@@ -3,25 +3,29 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>KodBook</title>
-		<link rel="stylesheet" type="text/css" th:href="@{/styles.css}">
+		<link rel="stylesheet" type="text/css" th:href="@{/styles.css}"/>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
 	</head>
-	<body>
-		<h1>KodBook</h1>
-		<h3>#1 Social media app!</h3>
-		<hr>
-		<form action="/login" method="post">
-			<label>USERNAME : </label>
-			<input type = "text" name = "username">
-			<br><br>
-			
-			<label>PASSWORD : </label>
-			<input type = "password" name = "password">
-			<br><br>
-			
-			<input type="submit" value = "LOGIN">
+	<body class="login-page">
+		<div class="container">
+			<h1>KodBook</h1>
+			<h3>#1 Social media app!</h3>
 			<hr>
-			<a href = "/openResetPassword">Forgot password?</a>
-			<a href = "/openSignUp">Create new account</a>
-		</form>
+			<form action="/login" method="post">
+				<label>USERNAME : </label>
+				<input type="text" name="username"/>
+				<br><br>
+
+				<label>PASSWORD : </label>
+				<input type="password" name="password"/>
+				<br><br>
+
+				<button type="submit"><i class="fas fa-sign-in-alt"></i> LOGIN</button>
+				<hr>
+				<a href="/openResetPassword"><i class="fas fa-key"></i> Forgot password?</a>
+				<a href="/openSignUp">Create new account</a>
+			</form>
+		</div>
 	</body>
 </html>

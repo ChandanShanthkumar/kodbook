@@ -1,6 +1,7 @@
 package com.kodbook.controllers;
 
 import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.kodbook.entities.Post;
+import com.kodbook.entities.Comment;
 import com.kodbook.entities.User;
 import com.kodbook.services.PostService;
 import com.kodbook.services.UserService;
@@ -41,7 +43,7 @@ public class UserController {
 			service.addUser(user);
 		}
 		return "index";
-	}
+	} 
 	
 	@PostMapping("/login")
 	public String login(@RequestParam String username,
@@ -64,30 +66,31 @@ public class UserController {
 	}
 
 
-	@GetMapping("/users/me")
-	public ResponseEntity<User> getCurrentUserProfile(HttpSession session) {
+	@GetMapping("/users/me")	
+	public String getCurrentUserProfile(HttpSession session, Model model) {
 		String username = (String) session.getAttribute("username");
 		if (username == null) {
-			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); // 401
+			return "redirect:/";
 		}
 		User user = service.getUser(username);
 		if (user == null) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404
+			return "redirect:/"; 
 		}
-		return new ResponseEntity<>(user, HttpStatus.OK); // 200
+		model.addAttribute("user", user);
+		return "myProfile";
 	}
 
 	@GetMapping("/users/{id}")
-	public ResponseEntity<User> getUserProfileById(@PathVariable Long id) {
+	public String getUserProfileById(@PathVariable Long id, Model model) {
 		User user = service.getUserById(id);
 		if (user == null) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return "redirect:/";
 		}
-		return new ResponseEntity<>(user, HttpStatus.OK);
+		model.addAttribute("user", user);
+		return "showUserProfile";
 	}
 	@PutMapping("/users/me")
-	public ResponseEntity<User> updateUserProfile(
-		@RequestBody User userDetails,
+	public String updateUserProfile( @RequestParam("photo") MultipartFile file, @ModelAttribute User userDetails,
 		HttpSession session) {
 		String username = (String) session.getAttribute("username");
 		if (username == null) {
@@ -104,11 +107,47 @@ public class UserController {
 		currentUser.setCollege(userDetails.getCollege());
 		currentUser.setLinkedIn(userDetails.getLinkedIn());
 		currentUser.setGitHub(userDetails.getGitHub());
-		if (userDetails.getProfilePic() != null) {
-            currentUser.setProfilePic(userDetails.getProfilePic());
-        }
-
+		 if (!file.isEmpty()) {
+	            try {
+	                byte[] bytes = file.getBytes();
+	                String base64Encoded = Base64.getEncoder().encodeToString(bytes);
+	                currentUser.setPhotoBase64(base64Encoded);
+	            } catch (IOException e) {
+	                e.printStackTrace();
+	            }
+	        }
+		
 		User updatedUser = service.updateUser(currentUser);
-		return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+		return "redirect:/users/me";
+	}
+	
+	
+	@PutMapping("/users/me/changepassword")
+	public String changePassword(@RequestParam String password,
+			HttpSession session) {
+		String username = (String) session.getAttribute("username");
+		if (username == null) {
+			return "redirect:/";
+		}
+		User currentUser = service.getUser(username);
+		if (currentUser == null) {
+			return "redirect:/";
+		}
+		currentUser.setPassword(password);
+		
+		User updatedUser = service.updateUser(currentUser);
+		
+		return "redirect:/users/me";
+		
+	}
+	
+	
+	@GetMapping("/search/users")
+	public String searchUsers(@RequestParam String username, Model model) {
+		
+		List<User> users = service.searchUserByUsername(username);
+		model.addAttribute("users", users);
+		return "searchUsers";
+		
 	}
 }
