@@ -1,0 +1,108 @@
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+  background: radial-gradient(circle at center, #ebe00f, #fae128);
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Container */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* Login Box */
+.login-box {
+  background-color: rgba(0, 0, 0, 0.8);
+  box-shadow: 0 0 25px #000, 0 0 15px #ffc10755;
+  border-radius: 16px;
+  padding: 40px 30px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+/* Logo Image */
+.logo-img {
+  width: 80px;
+  margin-bottom: 10px;
+}
+
+/* Logo Text */
+.logo-text {
+  font-size: 32px;
+  color: #ffc107;
+  margin-bottom: 5px;
+}
+
+/* Tagline */
+.tagline {
+  font-size: 14px;
+  color: #ffffffcc;
+  margin-bottom: 30px;
+}
+
+/* Input Fields */
+form input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: none;
+  border-radius: 8px;
+  background-color: #1a1a1a;
+  color: white;
+  box-shadow: inset 0 0 5px #000;
+}
+
+form input::placeholder {
+  color: #bbbbbb;
+}
+
+/* Login Button */
+form button {
+  width: 100%;
+  padding: 12px;
+  background-color: #ffc107;
+  color: black;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px #ffc10766;
+}
+
+form button:hover {
+  background-color: #e0a800;
+  box-shadow: 0 0 15px #ffc107aa;
+}
+
+/* Links */
+.links {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+}
+
+.links a {
+  color: #ffc107;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.links a:hover {
+  text-shadow: 0 0 5px #ffc10788;
+}

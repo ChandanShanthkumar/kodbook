@@ -1,0 +1,16 @@
+com\kodbook\repositories\CommentRepository.class
+com\kodbook\entities\Post.class
+com\kodbook\services\UserServiceImplementation.class
+com\kodbook\controllers\PostController.class
+com\kodbook\services\PostService.class
+com\kodbook\entities\User$Gender.class
+com\kodbook\repositories\PostRepository.class
+com\kodbook\controllers\UserController.class
+com\kodbook\repositories\UserRepository.class
+com\kodbook\entities\Comment.class
+com\kodbook\entities\User$Role.class
+com\kodbook\controllers\NavigationController.class
+com\kodbook\services\UserService.class
+com\kodbook\Application.class
+com\kodbook\services\PostServiceImplementation.class
+com\kodbook\entities\User.class
